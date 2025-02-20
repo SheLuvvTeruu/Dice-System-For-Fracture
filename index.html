@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>:3 uwu dice roller</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    /* Base styles */
+    body {
+      background: #f0f0f0;
+      color: #333;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: background 0.3s, color 0.3s;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    /* Tabs styling */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .tabs button {
+      padding: 10px 20px;
+      border: none;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      margin: 0 5px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .tabs button:hover {
+      background: #0056b3;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    /* Form styles */
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-inline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .form-inline input {
+      width: 80px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .form-inline span {
+      font-size: 1rem;
+    }
+    button.action-btn {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #28a745;
+      color: white;
+      transition: background 0.3s;
+    }
+    button.action-btn:hover {
+      background: #218838;
+    }
+    /* Button group for Combat Roller */
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .button-group button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #007bff;
+      color: white;
+      transition: background 0.3s;
+    }
+    .button-group button:hover {
+      background: #0056b3;
+    }
+    .results {
+      margin-top: 20px;
+      background: #e9ecef;
+      padding: 10px;
+      border-radius: 4px;
+      word-wrap: break-word;
+    }
+    .highlight {
+      font-weight: bold;
+      color: red;
+    }
+    /* Dark mode styles */
+    body.dark-mode {
+      background: #121212;
+      color: #e0e0e0;
+    }
+    body.dark-mode .container {
+      background: #1e1e1e;
+      color: #e0e0e0;
+      box-shadow: 0 2px 5px rgba(255,255,255,0.1);
+    }
+    body.dark-mode .tabs button {
+      background: #444;
+      color: #e0e0e0;
+    }
+    body.dark-mode .tabs button:hover {
+      background: #666;
+    }
+    body.dark-mode .results {
+      background: #333;
+    }
+    body.dark-mode input {
+      background: #333;
+      color: #e0e0e0;
+      border: 1px solid #555;
+    }
+    body.dark-mode button.action-btn {
+      background: #28a745;
+    }
+    #dark-mode-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #007bff;
+      color: white;
+      transition: background 0.3s;
+    }
+    #dark-mode-toggle:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <!-- Dark Mode Toggle Button -->
+  <button id="dark-mode-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
+  <div class="container">
+    <h1>:3 uwu dice roller</h1>
+    <!-- Tabs Navigation -->
+    <div class="tabs">
+      <button onclick="showTab('normal')">Normal Roller</button>
+      <button onclick="showTab('combat')">Combat Roller</button>
+    </div>
+
+    <!-- Normal Dice Roller Tab -->
+    <div id="normal" class="tab-content active">
+      <h2>Normal Dice Roller</h2>
+      <div class="form-group form-inline">
+        <input type="number" id="normalDiceCount" value="1" min="1">
+        <span>Dice</span>
+        <input type="number" id="normalDiceSides" value="20" min="2">
+        <span>Sided</span>
+      </div>
+      <div class="form-group form-inline">
+        <span>Rolled</span>
+        <input type="number" id="normalRollTimes" value="1" min="1">
+        <span>Time(s)</span>
+      </div>
+      <button class="action-btn" onclick="rollNormalDice()">Roll</button>
+      <div class="results" id="normalResults"></div>
+    </div>
+
+    <!-- Combat Dice Roller Tab (d6 only) -->
+    <div id="combat" class="tab-content">
+      <h2>Combat Dice Roller (d6 only)</h2>
+      <div class="form-group form-inline">
+        <input type="number" id="combatDiceCount" value="4" min="1">
+        <span>Dice (d6)</span>
+      </div>
+      <div class="button-group">
+        <button onclick="rollCombat('normal')">Normal</button>
+        <button onclick="rollCombat('advantage')">Advantage</button>
+        <button onclick="rollCombat('disadvantage')">Disadvantage</button>
+      </div>
+      <div class="results" id="combatResults"></div>
+    </div>
+  </div>
+
+  <script>
+    // --- Tab Switching ---
+    function showTab(tabName) {
+      const tabs = document.getElementsByClassName('tab-content');
+      for (let i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove('active');
+      }
+      document.getElementById(tabName).classList.add('active');
+    }
+
+    // --- Dark Mode Toggle ---
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    // --- Normal Dice Roller ---
+    function rollNormalDice() {
+      const diceCount = parseInt(document.getElementById('normalDiceCount').value);
+      const diceSides = parseInt(document.getElementById('normalDiceSides').value);
+      const rollTimes = parseInt(document.getElementById('normalRollTimes').value);
+      let resultsHTML = '';
+
+      for (let i = 0; i < rollTimes; i++) {
+        let rolls = [];
+        for (let j = 0; j < diceCount; j++) {
+          const roll = Math.floor(Math.random() * diceSides) + 1;
+          rolls.push(roll);
+        }
+        resultsHTML += `<p>${rolls.join(', ')}</p>`;
+      }
+      document.getElementById('normalResults').innerHTML = resultsHTML;
+    }
+
+    // --- Combat Dice Roller (d6 only) ---
+    // Normal: success if roll is 4–6
+    // Advantage: success if roll is 3–6
+    // Disadvantage: success if roll is 5–6
+    function rollCombat(mode) {
+      const diceCount = parseInt(document.getElementById('combatDiceCount').value);
+      let resultsHTML = '';
+      let threshold;
+
+      if (mode === 'normal') {
+        threshold = 4;
+      } else if (mode === 'advantage') {
+        threshold = 3;
+      } else if (mode === 'disadvantage') {
+        threshold = 5;
+      }
+
+      let successes = 0;
+      let rolls = [];
+      for (let i = 0; i < diceCount; i++) {
+        const roll = Math.floor(Math.random() * 6) + 1;
+        rolls.push(roll);
+        if (roll >= threshold) successes++;
+      }
+      resultsHTML += `<p><strong>Mode:</strong> ${mode.charAt(0).toUpperCase() + mode.slice(1)}</p>`;
+      resultsHTML += `<p><strong>Rolls:</strong> ${rolls.join(', ')}</p>`;
+      resultsHTML += `<p><strong>Successes (roll ≥ ${threshold}):</strong> ${successes}</p>`;
+      document.getElementById('combatResults').innerHTML = resultsHTML;
+    }
+
+    // --- Service Worker Registration ---
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('Service Worker Registered'))
+        .catch(error => console.log('Service Worker Registration Failed:', error));
+    }
+  </script>
+</body>
+</html>
