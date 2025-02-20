@@ -37,7 +37,10 @@
     h1, h2 {
       text-align: center;
     }
-    /* Hidden Pink Theme: apply only when not in dark mode */
+    /* Hidden Pink Theme: When pink mode is active and not in dark mode, override the entire background */
+    body:not(.dark-mode).pink-mode {
+      background: pink;
+    }
     body:not(.dark-mode).pink-mode .container {
       background: pink;
     }
@@ -161,6 +164,9 @@
       background: #28a745;
     }
     /* Ensure dark mode takes precedence over pink mode */
+    body.dark-mode.pink-mode {
+      background: #121212;
+    }
     body.dark-mode.pink-mode .container {
       background: #1e1e1e;
     }
@@ -250,7 +256,7 @@
     }
 
     // --- Hidden Pink Theme Toggle ---
-    // Clicking on the ":3" toggles the pink mode class on the body.
+    // Clicking on the ":3" toggles the pink mode class on the <body>.
     document.getElementById('hidden-toggle').addEventListener('click', function() {
       document.body.classList.toggle('pink-mode');
     });
@@ -312,3 +318,4 @@
   </script>
 </body>
 </html>
+
